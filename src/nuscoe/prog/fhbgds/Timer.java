@@ -1,7 +1,7 @@
 package nuscoe.prog.fhbgds;
 
 
-public class Timer extends Thread{
+public class Timer implements Runnable{
 
 	//1 billion nanoseconds is one second.
 	
@@ -17,17 +17,16 @@ public class Timer extends Thread{
 	
 	public void run(){
 		while(NuscoeMain.instance == null){try{Thread.sleep(100l);}catch(Exception e){}}
+		this.timeOfLastTick = System.nanoTime();
 		while(NuscoeMain.instance.shouldRun){
 			updateTimer();
-			for(int i = 0; i < this.elapsedTicks; i++){
-				this.doTick();
-			}
 		}
 	}
 	
 	public void updateTimer(){
 		long currentTime = System.nanoTime();
-		float diff = (currentTime - this.timeOfLastTick)/1000000000;
+		float diff = (currentTime - this.timeOfLastTick);
+		diff /= 1000000000;
 		if(diff >= (1/this.ticksPerSecond)){
 			this.elapsedTicks++;
 			this.timeOfLastTick = System.nanoTime();

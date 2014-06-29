@@ -5,8 +5,7 @@ import org.lwjgl.opengl.DisplayMode;
 
 public class NuscoeMain {
 	
-	public Timer timer;
-	static Thread timerThread;
+	static Timer timer;
 	protected boolean shouldRun = true;
 	public static NuscoeMain instance;
 	
@@ -20,18 +19,20 @@ public class NuscoeMain {
 		} catch (Exception e) {
 			e.printStackTrace();
 			Display.destroy();
-			System.exit(1);
+			System.exit(-1);
 		}
 	}
 	
 	public void run(){
 		Display.setTitle("NUSCoE");
 		while(!Display.isCloseRequested()){
+			for(int i = 0; i < timer.elapsedTicks; i++){
+				timer.doTick();
+			}
 			Display.update();
 		}
 		this.shouldRun = false;
 		Display.destroy();
-		
 	}
 	
 	public synchronized void doTick(){
@@ -39,7 +40,8 @@ public class NuscoeMain {
 	}
 	
 	public static void main(String[] args){
-		timerThread = new Timer(20);
+		timer = new Timer(20);
+		Thread timerThread = new Thread(timer);
 		timerThread.setName("Timer");
 		timerThread.start();
 		new NuscoeMain();
