@@ -3,7 +3,7 @@ package nuscoe.prog.fhbgds;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-public class NuscoeMain implements Runnable{
+public class NuscoeMain {
 	
 	public Timer timer;
 	static Thread timerThread;
