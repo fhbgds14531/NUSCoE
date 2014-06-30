@@ -2,9 +2,7 @@ package nuscoe.prog.fhbgds;
 
 
 public class Timer implements Runnable{
-
 	//1 billion nanoseconds is one second.
-	
 	float timerSpeed;
 	float ticksPerSecond;
 	long timeOfLastTick;
@@ -37,5 +35,4 @@ public class Timer implements Runnable{
 		this.elapsedTicks--;
 		NuscoeMain.instance.doTick();
 	}
-	
 }
