@@ -4,7 +4,11 @@ import org.lwjgl.input.Keyboard;
 
 public class Player extends Entity{
 
-	public Player(float x, float y, float sizeX, float sizeY) {
+	public Player() {
+		this(-10, -10, 20, 20);
+	}
+	
+	public Player(float x, float y, float sizeX, float sizeY){
 		super(x, y, sizeX, sizeY);
 	}
 

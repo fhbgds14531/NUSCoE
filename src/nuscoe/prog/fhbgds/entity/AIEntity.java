@@ -10,6 +10,7 @@ public class AIEntity extends Entity implements EntityAI{
 	public boolean needTravelY = false;
 	boolean waitingToTravel = false;
 	public int travelCooldown;
+	public boolean convert = false;
 	
 	
 	public AIEntity(float x, float y, float sizeX, float sizeY) {
@@ -34,6 +35,7 @@ public class AIEntity extends Entity implements EntityAI{
 			this.currentTargetCoords = new Float[] {this.xPos, this.yPos};
 			this.waitingToTravel = true;
 		}
+		if(rand.nextFloat() < 0.01) this.convert = true;
 	}
 	
 	public void continueMoving(){

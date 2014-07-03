@@ -27,6 +27,11 @@ public class BoundingBox {
 		return true;
 	}
 	
+	public void moveTo(float x, float y){
+		this.x = x;
+		this.y = y;
+	}
+	
 	public void moveBy(float xAmount, float yAmount){
 		this.x += xAmount;
 		this.y += yAmount;
