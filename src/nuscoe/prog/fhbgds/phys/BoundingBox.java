@@ -36,4 +36,9 @@ public class BoundingBox {
 		this.x += xAmount;
 		this.y += yAmount;
 	}
+
+	public void expandTo(float f, float g) {
+		this.sizeX = f;
+		this.sizeY = g;
+	}
 }

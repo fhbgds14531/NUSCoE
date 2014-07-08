@@ -1,9 +1,6 @@
 package nuscoe.prog.fhbgds.util;
 
 import nuscoe.prog.fhbgds.NuscoeMain;
-import nuscoe.prog.fhbgds.entity.AIEntity;
-import nuscoe.prog.fhbgds.entity.Entity;
-import nuscoe.prog.fhbgds.entity.Follower;
 
 import org.lwjgl.input.Keyboard;
 
@@ -13,15 +10,21 @@ public class KeyboardChecker {
 		while(Keyboard.next()){
 			if(Keyboard.getEventKeyState()){
 				if(Keyboard.getEventKey() == Keyboard.KEY_H){
-					NuscoeMain.instance.damagePlayer();
+					NuscoeMain.instance.healPlayer();
 				}
 				
-				if(Keyboard.getEventKey() == Keyboard.KEY_F){
-					Entity entity = NuscoeMain.instance.getRandomEntity(null);
-					if(entity instanceof AIEntity && !(entity instanceof Follower)){
-						AIEntity ent = (AIEntity) entity;
-						ent.convert = true;
-					}
+				if(Keyboard.getEventKey() == Keyboard.KEY_ESCAPE){
+					NuscoeMain.instance.isPaused = !NuscoeMain.instance.isPaused;
+				}
+				
+				if(Keyboard.getEventKey() == Keyboard.KEY_SPACE){
+					NuscoeMain.instance.spawnPlayerProjectiles();
+				}
+				if(Keyboard.getEventKey() == Keyboard.KEY_L){
+					NuscoeMain.instance.addLife(1);
+				}
+				if(Keyboard.getEventKey() == Keyboard.KEY_SEMICOLON){
+					NuscoeMain.instance.addLife(-1);
 				}
 			}
 		}
