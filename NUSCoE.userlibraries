@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="lib">
+    <archive path="C:/Users/James/Games/NUSCoE/lib/lwjgl.jar" />
+    <archive path="C:/Users/James/Games/NUSCoE/lib/lwjgl_util.jar" />
+    <archive path="C:/Users/James/Games/NUSCoE/lib/PNGDecoder.jar" />
+    <archive path="C:/Users/James/Games/NUSCoE/lib/slick.jar" />
+  </library>
+</eclipse-userlibraries>
+

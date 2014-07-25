@@ -41,4 +41,8 @@ public class BoundingBox {
 		this.sizeX = f;
 		this.sizeY = g;
 	}
+	
+	public static BoundingBox clone(BoundingBox bb){
+		return new BoundingBox(bb.x, bb.y, bb.sizeX, bb.sizeY);
+	}
 }

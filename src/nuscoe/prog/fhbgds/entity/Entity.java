@@ -5,16 +5,20 @@ import nuscoe.prog.fhbgds.phys.BoundingBox;
 import nuscoe.prog.fhbgds.util.Damage;
 
 public class Entity {
-	public static int lastEntityID = 0;
+	public static int lastEntityID = -1;
 	public int entityID;
 	public float xPos;
 	public float yPos;
 	float lastX, lastY;
 	public float motionX, motionY;
 	public float sizeX, sizeY;
-	public float health = 1.0f;
+	public float health = 1.5f;
 	public boolean isDead = false;
 	private BoundingBox bb;
+	public boolean jumping;
+	public int jumpCounter = 0;
+	public boolean affectedByGravity = true;
+	public boolean facingLeft;
 	
 	public Entity(float x, float y, float sizeX, float sizeY){
 		this.xPos = x;
@@ -30,49 +34,77 @@ public class Entity {
 		}
 		lastX = this.xPos;
 		lastY = this.yPos;
-		if(!(this instanceof Projectile)) this.motionX *= 0.8f;
-		if(!(this instanceof Projectile)) this.motionY *= 0.8f;
+		if(!(this instanceof Projectile)) this.motionX *= 0.75f;
+		if(this.motionX < 0.0001 && this.motionX > -0.0001) this.motionX = 0;
+		if(!(this instanceof Projectile)) this.motionY *= 0.75f;
+		if(this.motionY < 0.0005 && this.motionY > -0.0005) this.motionY = 0;
 		
 		Entity[] ea = NuscoeMain.instance.getLoadedEntities();
 		for(int i = 0; i < ea.length; i++){
-			int count = 0;
-			if(ea[i].entityID != this.entityID && count < 3 && !(ea[i] instanceof Projectile)){
-				if(this.getBoundingBox().isInside(ea[i].getBoundingBox())){
-					if(ea[i].motionX > this.motionX + 3 && !(this instanceof Projectile)) this.motionX = ea[i].motionX;
-					if(ea[i].motionX < this.motionX - 3 && !(this instanceof Projectile)) this.motionX = ea[i].motionX;
-					if(ea[i].motionY > this.motionY + 3 && !(this instanceof Projectile)) this.motionY = ea[i].motionY;
-					if(ea[i].motionY < this.motionY - 3 && !(this instanceof Projectile)) this.motionY = ea[i].motionY;
-					if(ea[i].xPos > this.xPos && !(this instanceof Projectile)) this.motionX *= 0.8;
-					if(ea[i].xPos < this.xPos && !(this instanceof Projectile)) this.motionX *= 1.1;
-					if(ea[i].yPos > this.yPos && !(this instanceof Projectile)) this.motionY *= 0.8;
-					if(ea[i].yPos < this.yPos && !(this instanceof Projectile)) this.motionY *= 1.1;
-					count ++;
-					if(!NuscoeMain.instance.getPlayer().isDead && NuscoeMain.instance.getPlayer().lives >= 0){
-						if(ea[i] instanceof Player && this instanceof Follower){
-							Damage.damageEntity(ea[i], Damage.getFollowerSource((Follower)this), 0.05f);
-						}else if(!(ea[i] instanceof Projectile) && this instanceof Player){
-							Damage.damageEntity(ea[i], Damage.sourcePlayer, 0.1f);
-						}else if(this instanceof Projectile && !(ea[i] instanceof Player)){
-							Damage.damageEntity(ea[i], Damage.sourcePlayerProjectile, 0.25f);
-						}else if(this instanceof Follower && ea[i] instanceof Follower){
+			Entity otherEntity = ea[i];
+			if(otherEntity.entityID != this.entityID && !(otherEntity instanceof Projectile)){
+				if(this.getBoundingBox().isInside(otherEntity.getBoundingBox())){
+					if(otherEntity.xPos > this.xPos && !(this instanceof Projectile)) this.motionX *= 0.8;
+					if(otherEntity.xPos < this.xPos && !(this instanceof Projectile)) this.motionX *= 1.1;
+					if(otherEntity.yPos > this.yPos && !(this instanceof Projectile)) this.motionY *= 0.8;
+					if(otherEntity.yPos < this.yPos && !(this instanceof Projectile)) this.motionY *= 1.1;
+					if(!NuscoeMain.instance.getPlayer().isDead){
+						if(
+							otherEntity instanceof Player && 
+							this instanceof Follower && 
+							NuscoeMain.instance.playerDamageCooldown <= 0
+							){
+							Damage.damageEntity(otherEntity, Damage.getFollowerSource((Follower)this), 0.33f);
+							NuscoeMain.instance.playerDamageCooldown += 10;
+						}else if(
+								this instanceof Projectile && 
+								!(otherEntity instanceof Player)
+								){
+							Damage.damageEntity(otherEntity, Damage.sourcePlayerProjectile, otherEntity.health);
+							this.health = -1;
+						}else if(
+								this instanceof Follower && 
+								otherEntity instanceof Follower
+								){
 							Follower e = (Follower)this;
-							if(e.targetEntity.entityID != ea[i].entityID) break;
-							Damage.damageEntity(ea[i], Damage.getFollowerSource((Follower)this), 0.1f);
+							if(e.targetEntity.entityID != e.entityID) break;
+							Damage.damageEntity(e, Damage.getFollowerSource((Follower)this), 0.1f);
 						}
 					}
 				}
 			}
 		}
 		
+		if(this.jumping){
+			this.jumpCounter++;
+		}else{
+			this.jumpCounter = 0;
+		}
+		
+		if(!this.jumping && ! (this instanceof Projectile || this instanceof Follower)){
+			if(this.affectedByGravity) this.motionY += 10;
+		}else{
+			if(this.jumpCounter > 10){
+				if(this.affectedByGravity) this.motionY += 2.5;
+			}else{
+				if(this.affectedByGravity) this.motionY += 0.75;
+			}
+		}
+		
 		if(this.motionX >  5 && !(this instanceof Projectile)) this.motionX =  5;
 		if(this.motionX < -5 && !(this instanceof Projectile)) this.motionX = -5;
-		if(this.motionY >  5 && !(this instanceof Projectile)) this.motionY =  5;
-		if(this.motionY < -5 && !(this instanceof Projectile)) this.motionY = -5;
+		if(this.motionY >  7 && !(this instanceof Projectile)) this.motionY =  7;
+		if(this.motionY < -10 && !(this instanceof Projectile) && !(this instanceof Player)) this.motionY = -10;
 		
 		if(!(this instanceof Projectile)) this.xPos += this.motionX;
 		if(!(this instanceof Projectile)) this.yPos += this.motionY;
 		
-		if(!(this instanceof Projectile)) this.getBoundingBox().moveTo(this.xPos, this.yPos);
+		if(!(this instanceof Projectile)) this.moveBBTo(this.xPos, this.yPos);
+		if(this.motionX > 0) this.facingLeft = false; else if(this.motionX < 0) this.facingLeft = true;
+	}
+	
+	public void moveBBTo(float x, float y){
+		this.bb.moveTo(x, y);
 	}
 
 	public BoundingBox getBoundingBox() {

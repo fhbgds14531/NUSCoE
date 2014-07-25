@@ -55,21 +55,21 @@ public class AIEntity extends Entity implements EntityAI{
 			int maxSpeed = 5;
 			if(this.needTravelX){
 				if(this.currentTargetCoords[0] < this.xPos){
-					this.motionX -= 1.2;
+					this.motionX -= 1;
 				}
 				if(this.motionX < -maxSpeed) this.motionX = -maxSpeed;
 				if(this.currentTargetCoords[0] > this.xPos){
-					this.motionX += 1.2;
+					this.motionX += 1;
 				}
 				if(this.motionX > maxSpeed) this.motionX = maxSpeed;
 			}
 			if(this.needTravelY){
 				if(this.currentTargetCoords[1] < this.yPos){
-					this.motionY -= 1.2;
+					this.motionY -= 1;
 				}
 				if(this.motionY < -maxSpeed) this.motionY = -maxSpeed;
 				if(this.currentTargetCoords[1] > this.yPos){
-					this.motionY += 1.2;
+					this.motionY += 1;
 				}
 				if(this.motionY > maxSpeed) this.motionY = maxSpeed;
 			}

@@ -24,7 +24,7 @@ public class Follower extends AIEntity implements EntityAI{
 
 	@Override
 	public Float[] getTargetCoords(Entity theEntity) {
-		Float[] coords = new Float[] {theEntity.xPos, theEntity.yPos};
+		Float[] coords = new Float[] {theEntity.xPos + (theEntity.sizeX / 2), theEntity.yPos + (theEntity.sizeY / 2)};
 		return coords;
 	}
 	

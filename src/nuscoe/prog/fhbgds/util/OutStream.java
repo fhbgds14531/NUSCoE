@@ -15,9 +15,13 @@ public class OutStream extends PrintStream {
 
 	public void print(String s){
 		if (s == null) s = "null";
+		if(s.startsWith("!cpk")){
+			this.catchCPK(s);
+			return;
+		}
 		super.print(this.formatString(s));
 	}
-	
+
 	public void print(Object o){
 		this.print(String.valueOf(o));
 	}
@@ -57,6 +61,51 @@ public class OutStream extends PrintStream {
 		date = sdf.format(d);
 		String newString = "[" + date + "] " + s;
 		return newString;
+	}
+
+	public void catchCPK(String s){ //"!cpk_<num>:(<add/mod>)Sky Blue,1-1-1"
+		if(s.contains("(mod)")) this.changeColor(s);
+		if(s.contains("(add)")) this.addColor(s);
+	}
+	
+	private void addColor(String s) {
+		String colorName = s.substring(s.indexOf(")") + 1, s.indexOf(","));
+		String rgb = s.substring(s.indexOf("," + 1));
+		String cpkNum = s.substring(s.indexOf("_") + 1, s.indexOf(":"));
+		rgb = rgb.replace(",", "");
+		rgb = rgb.replace("-", "f, ");
+		rgb = rgb.replace("", "");
+		rgb += "f";
+		float r = Float.valueOf(rgb.substring(0, rgb.indexOf("f")));
+		rgb = rgb.substring(rgb.indexOf(",") + 1);
+		float g = Float.valueOf(rgb.substring(0, rgb.indexOf("f")));
+		rgb = rgb.substring(rgb.indexOf(",") + 1);
+		float b = Float.valueOf(rgb);
+		this.println("\"" + s + "\"");
+		this.println("Colorpack " + cpkNum + " is replacing \"" + colorName + "\"\'s values with: " + r + "f, " + g + "f, " + b + "f.");
+		try{
+			Color color = new Color(r, g, b, colorName);
+			Colors.addColor(color);
+		}catch(Throwable e){
+			System.err.println(e.getMessage());
+		}
+	}
+
+	private void changeColor(String s){
+		String colorName = s.substring(s.indexOf(")") + 1, s.indexOf(";"));
+		String rgb = s.substring(s.indexOf(";"));
+		String cpkNum = s.substring(s.indexOf("_") + 1, s.indexOf(":"));
+		rgb = rgb.replace(";", "");
+		rgb = rgb.replace("-", "f, ");
+		rgb += "f";
+		float r = Float.valueOf(rgb.substring(0, rgb.indexOf("f")));
+		rgb = rgb.substring(rgb.indexOf(",") + 1);
+		float g = Float.valueOf(rgb.substring(0, rgb.indexOf("f")));
+		rgb = rgb.substring(rgb.indexOf(",") + 1);
+		float b = Float.valueOf(rgb);
+		this.println("\"" + s + "\"");
+		this.println("Colorpack " + cpkNum + " is replacing \"" + colorName + "\"\'s values with: " + r + "f, " + g + "f, " + b + "f.");
+		Colors.replaceValues(colorName, new Float[]{r, g, b});
 	}
 	
 }

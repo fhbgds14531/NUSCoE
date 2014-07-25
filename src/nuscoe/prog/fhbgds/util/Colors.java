@@ -1,48 +1,94 @@
 package nuscoe.prog.fhbgds.util;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import org.lwjgl.opengl.GL11;
 
 public class Colors {
 
-	private static Color[] colors = new Color[32];
+	static int lastColor = 0;
+	private static HashMap<String, Color> colors = new HashMap<String, Color>();
+	
+		public static Color white;
+		public static Color black;
+		public static Color darkGrey;
+		public static Color mediumGrey;
+		public static Color lightGrey;
+		public static Color pureRed;
+		public static Color pureGreen;
+		public static Color pureBlue;
+		public static Color pastelRed;
+		public static Color pastelGreen;
+		public static Color pastelBlue;
+		public static Color backgroundGrey;
+		public static Color yellow;
+		public static Color orange;
+		public static Color skyBlue;
+		public static Color grassGreen;
+		public static Color signGreen;
+		public static Color midnightBlue;
+		public static Color midnightGrass;
 	
 	public Colors(){
 		try {
-			colors[0]  = new Color(1,    1,    1,    "White"          );
-			colors[1]  = new Color(0,    0,    0,    "Black"          );
-			colors[2]  = new Color(0.2f, 0.2f, 0.2f, "Dark Grey"      );
-			colors[3]  = new Color(0.4f, 0.4f, 0.4f, "Medium Grey"    );
-			colors[4]  = new Color(0.8f, 0.8f, 0.8f, "Light Grey"     );
-			colors[5]  = new Color(1,    0,    0,    "Pure Red"       );
-			colors[6]  = new Color(0,    1,    0,    "Pure Green"     );
-			colors[7]  = new Color(0,    0,    1,    "Pure Blue"      );
-			colors[8]  = new Color(1,    0.4f, 0.4f, "Pastel Red"     );
-			colors[9]  = new Color(0.4f, 1,    0.4f, "Pastel Green"   );
-			colors[10] = new Color(0.4f, 0.4f, 1,    "Pastel Blue"    );
-			colors[11] = new Color(0.3f, 0.3f, 0.3f, "Background Grey");
-			colors[12] = new Color(1,    1,    0,    "Yellow"         );
-			colors[13] = new Color(1,    0.53f,0,    "Orange"         );
-			colors[13] = new Color(0,    0.6f, 0.8f, "Sky Blue"       );
-			colors[14] = new Color(0,    0.55f,0,    "Grass"          );
-			colors[15] = new Color(0.42f,0.33f,0.7f, "Sign Green"     );
+			white = new Color(1, 1, 1, "White");
+			Colors.addColor(white);
+			black = new Color(0, 0, 0, "Black");
+			Colors.addColor(black);
+			darkGrey = new Color(0.2f, 0.2f, 0.2f, "Dark Grey");
+			Colors.addColor(darkGrey);
+			mediumGrey = new Color(0.4f, 0.4f, 0.4f, "Medium Grey");
+			Colors.addColor(mediumGrey);
+			lightGrey = new Color(0.8f, 0.8f, 0.8f, "Light Grey");
+			Colors.addColor(lightGrey);
+			pureRed = new Color(1, 0, 0, "Pure Red");
+			Colors.addColor(pureRed);
+			pureGreen = new Color(0, 1, 0, "Pure Green");
+			Colors.addColor(pureGreen);
+			pureBlue = new Color(0, 0, 1, "Pure Blue");
+			Colors.addColor(pureBlue);
+			pastelRed = new Color(1, 0.4f, 0.4f, "Pastel Red");
+			Colors.addColor(pastelRed);
+			pastelGreen = new Color(0.4f, 1, 0.4f, "Pastel Green");
+			Colors.addColor(pastelGreen);
+			pastelBlue = new Color(0.4f, 0.4f, 1, "Pastel Blue");
+			Colors.addColor(pastelBlue);
+			backgroundGrey = new Color(0.3f, 0.3f, 0.3f, "Background Grey");
+			Colors.addColor(backgroundGrey);
+			yellow = new Color(1, 1, 0, "Yellow");
+			Colors.addColor(yellow);
+			orange = new Color(1, 0.53f, 0, "Orange");
+			Colors.addColor(orange);
+			skyBlue = new Color(0, 0.6f, 0.8f, "Sky Blue");
+			Colors.addColor(skyBlue);
+			grassGreen = new Color(0, 0.55f, 0, "Grass");
+			Colors.addColor(grassGreen);
+			signGreen = new Color(0.42f, 0.33f, 0.7f, "Sign Green");
+			Colors.addColor(signGreen);
+			midnightBlue = new Color(0, 0, 0.2f, "Midnight Blue");
+			Colors.addColor(midnightBlue);
+			midnightGrass = new Color(0, 0.33f, 0, "Midnight Grass");
+			Colors.addColor(midnightGrass);
 		} catch (InvalidNameException e) {
 			System.err.println(e.getMessage());
 		}
 	}
 	
 	public static Color getColorByName(String name){
-		for(int i = 0; i < colors.length; i++){
-			if(colors[i] != null){
-				if(name == colors[i].name) return colors[i];
+		Iterator<Entry<String, Color>> it = colors.entrySet().iterator();
+		while(it.hasNext()){
+			Entry<String, Color> e = it.next();
+			if(e != null){
+				if(e.getValue().getName().contentEquals(name)) return e.getValue();
 			}
 		}
-		return null;
+		return Colors.white;
 	}
 	
-	public static boolean isNameUniuqe(String name){
-		for(int i = 0; i < colors.length; i++){
-			if(colors[i] != null && colors[i].name == name) return false;
-		}
+	public static boolean isNameUnique(String name){
+		if(colors.containsKey(name)) return false;
 		return true;
 	}
 	
@@ -55,8 +101,35 @@ public class Colors {
 		GL11.glColor3f(color.red, color.green, color.blue);
 	}
 	
+	public static void setGLColorTo(Color color){
+		if(color == null){
+			GL11.glColor3f(1, 1, 1);
+			return;
+		}
+		GL11.glColor3f(color.red, color.green, color.blue);
+	}
+	
 	public static void resetGLColor(){
 		setGLColorTo("White");
+	}
+
+	public static void addColor(float r, float g, float b, String name) {
+		try{Colors.addColor(new Color(r, g, b, name));}catch (InvalidNameException e){System.out.println(e.getMessage());}
+	}
+
+	public static void addColor(Color color){
+			colors.put(color.getName(), color);
+	}
+
+	public static void replaceValues(String colorName, Float[] values){
+		Color color = Colors.getColorByName(colorName);
+		if(color != null){
+			color.setRGB(values);
+			System.out.println("Successfully replaced \"" + colorName + "\"\'s values!");
+			Color colour = Colors.getColorByName(colorName);
+			System.out.println("Values: " + colour.red + ", " + colour.green + ", " + colour.blue);
+		}
+
 	}
 	
 }
